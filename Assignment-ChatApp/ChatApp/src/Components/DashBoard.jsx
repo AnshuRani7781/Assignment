@@ -75,8 +75,11 @@ const DashBoard = () => {
     }
   };
   useEffect(() => {
-    if (isSmallScreen) {
+    if (isSmallScreen && !isOpen) {
       setIsOpen(true);
+    } else if (!isSmallScreen && isFeatureModalOpen == true) {
+      setIsOpen(false);
+      setFeatureModalOpen(false);
     }
   }, [isSmallScreen]);
   // Handle sidebar state on window resize
