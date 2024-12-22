@@ -6,16 +6,12 @@
 :root {
   background-image: linear-gradient(#4dc9e6, #210cae);
 }
-/* Hide scrollbar by default */
-/* General styles for the scrollable container */
-/* General styles for the scrollable container */
 .scrollable {
   height: 300px; /* Set a fixed height or any height */
   overflow: hidden; /* Hide the scrollbar by default */
   position: relative;
 }
 
-/* Webkit browsers (Chrome, Safari, Edge) */
 .scrollable::-webkit-scrollbar {
   width: 8px; /* Scrollbar width */
   opacity: 0; /* Initially hide the scrollbar */

@@ -67,9 +67,7 @@ const DashBoard = () => {
         setSidebarActive(false); // Reset sidebar state on larger screens
       }
     };
-
     window.addEventListener("resize", handleResize);
-
     return () => {
       window.removeEventListener("resize", handleResize);
     };

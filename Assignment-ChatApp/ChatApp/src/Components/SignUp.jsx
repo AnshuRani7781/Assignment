@@ -36,9 +36,7 @@ const SignUp = () => {
 
   const validateForm = () => {
     let isValid = true;
-
     const nameRegex = /^[A-Za-z]+$/; // Regular expression to allow only letters
-
     if (!firstName.trim()) {
       toast.error("First Name is required.");
       isValid = false;
@@ -46,7 +44,6 @@ const SignUp = () => {
       toast.error("First Name must contain only letters.");
       isValid = false;
     }
-
     if (!lastName.trim()) {
       toast.error("Last Name is required.");
       isValid = false;
@@ -54,7 +51,6 @@ const SignUp = () => {
       toast.error("Last Name must contain only letters.");
       isValid = false;
     }
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) {
       toast.error("Email is required.");
@@ -63,7 +59,6 @@ const SignUp = () => {
       toast.error("Invalid email format.");
       isValid = false;
     }
-
     if (!password) {
       toast.error("Password is required.");
       isValid = false;
@@ -71,14 +66,13 @@ const SignUp = () => {
       toast.error("Password must be at least 6 characters.");
       isValid = false;
     }
-
     if (password !== confirmPassword) {
       toast.error("Passwords do not match.");
       isValid = false;
     }
-
     return isValid;
   };
+  
   const handleSignUp = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
