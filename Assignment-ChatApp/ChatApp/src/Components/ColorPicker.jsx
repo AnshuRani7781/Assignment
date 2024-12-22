@@ -67,7 +67,7 @@ const ColorPicker = ({
   };
 
   return (
-    <div className="color-picker" style={{ marginLeft: "5px" }}>
+    <div className="color-picker" style={{}}>
       <label htmlFor="backgroundColorPicker">
         <box-icon
           type="solid"

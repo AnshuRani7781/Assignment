@@ -20,3 +20,19 @@
 .log-out:active {
   transform: scale(0.95); /* Press-down effect */
 }
+
+@media (max-width: 600px) {
+  .log-out {
+    background-color: #f1f5f9;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 2px;
+    text-align: center;
+    margin: 5px 5px;
+    font-size: 7px;
+    color: #333;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+  }
+}

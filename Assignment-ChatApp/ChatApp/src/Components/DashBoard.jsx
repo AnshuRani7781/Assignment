@@ -745,7 +745,13 @@ const DashBoard = () => {
       <div className="main-chat">
         <div className="chat-header">
           <div className="header-container">
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               {/* Menu Icon */}
               <div className="menu-icon">
                 <box-icon
@@ -761,7 +767,7 @@ const DashBoard = () => {
                 <div className="profile">
                   <span
                     className="back"
-                    style={{ marginRight: "10px" }}
+                    style={{ marginRight: "0.5rem" }}
                     onClick={() => setSelectedMember(null)}
                   >
                     <MdArrowBackIosNew />
@@ -776,6 +782,7 @@ const DashBoard = () => {
                     {/* to show typing or not  */}
                     {typingUsers.includes(selectedMember.uid) && (
                       <span
+                        className="typing"
                         style={{
                           paddingTop: "5px",
                           paddingLeft: "10px",
@@ -823,6 +830,12 @@ const DashBoard = () => {
                     justifyContent: "space-between",
                   }}
                 >
+                  <ColorPicker
+                    db={db}
+                    selectedChatRoom={selectedChatRoom}
+                    setSelectedChatRoom={setSelectedChatRoom}
+                    setTimeStampColor={setTimeStampColor}
+                  />
                   {/* Font Selector */}
                   <div style={{ fontFamily: selectedFont }}>
                     <div
@@ -864,12 +877,6 @@ const DashBoard = () => {
                   </div>
 
                   {/* Color Picker */}
-                  <ColorPicker
-                    db={db}
-                    selectedChatRoom={selectedChatRoom}
-                    setSelectedChatRoom={setSelectedChatRoom}
-                    setTimeStampColor={setTimeStampColor}
-                  />
 
                   {/* Delete Chat Icon */}
                   <div
