@@ -11,9 +11,10 @@ const Home = () => {
       style={{
         fontFamily: "Arial, sans-serif",
         color: "#fff",
-        maxHeight: "80vh",
+        maxHeight: "fitContent",
         position: "relative",
-        background: "linear-gradient(to top ,#4dc9e6, #210cae)",
+        background:
+          "linear-gradient(to top, rgb(77, 201, 230), rgb(33, 12, 174));",
       }}
     >
       <div style={{ position: "absolute", top: "-30px", left: "35px" }}>
