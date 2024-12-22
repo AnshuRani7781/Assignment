@@ -23,11 +23,11 @@ const getUndertoneColor = (backgroundColor) => {
 
   // If luminance is high (light background), return black with opacity
   if (luminance > 186) {
-    return `rgba(0, 0, 0, 0.3)`; // Black with 30% opacity
+    return `rgba(0, 0, 0, 0.6)`; // Black with 30% opacity
   }
 
   // If luminance is low (dark background), return white with opacity
-  return `rgba(255, 255, 255, 0.3)`; // White with 30% opacity
+  return `rgba(255, 255, 255, 0.6)`; // White with 30% opacity
 };
 
 const ColorPicker = ({

@@ -96,8 +96,8 @@ const ChatInput = ({
         }}
         style={{
           flex: 1,
-          padding: "8px",
-          borderRadius: "5px",
+          padding: "10px",
+          borderRadius: "8px",
           border: "1px solid #ccc",
           marginRight: "10px",
         }}

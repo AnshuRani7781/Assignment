@@ -1,4 +1,6 @@
 import "./../styles/InboxHeader.css"; // Import your CSS for styling
+import FeaturesCenter from "./FeaturesCentre";
+import { useMediaQuery } from "react-responsive";
 import ChatInput from "./ChatInput";
 import ChatMessages from "./ChatMessages";
 import "boxicons";
@@ -59,7 +61,24 @@ const DashBoard = () => {
   const [typingTimeout, setTypingTimeout] = useState(null);
   const [typingUsers, setTypingUsers] = useState([]);
   const [isOpen, setIsOpen] = useState(true);
+  const [isFeatureModalOpen, setFeatureModalOpen] = useState(false);
 
+  // Use media query hook to check screen size
+  const isSmallScreen = useMediaQuery({ query: "(max-width: 500px)" });
+
+  // Toggle function for smaller screen (opens modal) and larger screen (opens feature menu)
+  const handleToggleWithScreenSize = () => {
+    if (isSmallScreen) {
+      setFeatureModalOpen(!isFeatureModalOpen); // For small screens, toggle modal
+    } else {
+      handleToggle(); // For larger screens, use the regular toggle
+    }
+  };
+  useEffect(() => {
+    if (isSmallScreen) {
+      setIsOpen(true);
+    }
+  }, [isSmallScreen]);
   // Handle sidebar state on window resize
   useEffect(() => {
     const handleResize = () => {
@@ -818,7 +837,7 @@ const DashBoard = () => {
                   <IoIosOptions
                     size={24}
                     style={{ cursor: "pointer" }}
-                    onClick={handleToggle}
+                    onClick={handleToggleWithScreenSize}
                   />
                 </span>
               ) : (
@@ -830,12 +849,6 @@ const DashBoard = () => {
                     justifyContent: "space-between",
                   }}
                 >
-                  <ColorPicker
-                    db={db}
-                    selectedChatRoom={selectedChatRoom}
-                    setSelectedChatRoom={setSelectedChatRoom}
-                    setTimeStampColor={setTimeStampColor}
-                  />
                   {/* Font Selector */}
                   <div style={{ fontFamily: selectedFont }}>
                     <div
@@ -877,7 +890,12 @@ const DashBoard = () => {
                   </div>
 
                   {/* Color Picker */}
-
+                  <ColorPicker
+                    db={db}
+                    selectedChatRoom={selectedChatRoom}
+                    setSelectedChatRoom={setSelectedChatRoom}
+                    setTimeStampColor={setTimeStampColor}
+                  />
                   {/* Delete Chat Icon */}
                   <div
                     onClick={handleDeleteChat}
@@ -897,6 +915,20 @@ const DashBoard = () => {
                     />
                   </span>
                 </div>
+              )}
+
+              {isSmallScreen && isFeatureModalOpen && (
+                <FeaturesCenter
+                  db={db} // You can pass your db or other necessary props
+                  selectedChatRoom={selectedChatRoom}
+                  setSelectedChatRoom={setSelectedChatRoom}
+                  setTimeStampColor={setTimeStampColor}
+                  handleFontChange={handleFontChange}
+                  selectedFont={selectedFont} // Example font value
+                  setSelectedFont={setSelectedFont} //
+                  handleDeleteChat={handleDeleteChat}
+                  handleToggle={handleToggleWithScreenSize}
+                />
               )}
             </div>
           </div>
