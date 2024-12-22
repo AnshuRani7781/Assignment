@@ -20,7 +20,7 @@ const ChatMessages = ({
 
   return (
     <div
-      className="chat-messages"
+      className="chat-messages scrollable"
       ref={chatContainerRef} // Attach the ref to the container
       style={{
         backgroundColor: selectedChatRoom?.color || "#ffffff", // Default white

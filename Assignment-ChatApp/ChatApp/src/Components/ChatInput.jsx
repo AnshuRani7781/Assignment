@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import EmojiPicker from "emoji-picker-react";
-import "boxicons/css/boxicons.min.css"; 
+import "boxicons/css/boxicons.min.css";
 import "./../styles/InboxHeader.css";
 
 const ChatInput = ({
@@ -12,7 +12,30 @@ const ChatInput = ({
   handleInputChange,
 }) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const emojiPickerRef = useRef(null);
 
+  // Close emoji picker on clicking outside
+  const handleClickOutside = (event) => {
+    if (
+      emojiPickerRef.current &&
+      !emojiPickerRef.current.contains(event.target) &&
+      event.target.closest(".emoji-picker-button") === null // Ensure the button is excluded
+    ) {
+      setShowEmojiPicker(false);
+    }
+  };
+
+  useEffect(() => {
+    if (showEmojiPicker) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showEmojiPicker]);
+
+  // Add emoji to message
   const handleEmojiClick = (emoji) => {
     setNewMessage((prevMessage) => prevMessage + emoji.emoji);
   };
@@ -33,9 +56,12 @@ const ChatInput = ({
       >
         <box-icon name="happy" size="md"></box-icon>
       </button>
+
       {/* Emoji Picker Component */}
       {showEmojiPicker && (
         <div
+          className="emoji-picker"
+          ref={emojiPickerRef}
           style={{
             position: "absolute",
             bottom: "50px",
@@ -46,9 +72,16 @@ const ChatInput = ({
             borderRadius: "8px",
           }}
         >
-          <EmojiPicker onEmojiClick={handleEmojiClick} />
+          <EmojiPicker
+            onEmojiClick={handleEmojiClick}
+            style={{
+              width: "100%", // Responsive width
+              height: "100%", // Responsive height
+            }}
+          />
         </div>
       )}
+
       {/* Message Input Field */}
       <input
         type="text"
@@ -61,7 +94,15 @@ const ChatInput = ({
         onKeyDown={(e) => {
           if (e.key === "Enter") sendMessage(); // Send message on Enter key
         }}
+        style={{
+          flex: 1,
+          padding: "8px",
+          borderRadius: "5px",
+          border: "1px solid #ccc",
+          marginRight: "10px",
+        }}
       />
+
       {/* Send Button */}
       <button
         onClick={sendMessage}

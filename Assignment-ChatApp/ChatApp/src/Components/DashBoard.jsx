@@ -775,10 +775,10 @@ const DashBoard = () => {
                   <img
                     src="http://placehold.co/40x40"
                     alt="Profile"
-                    className="profile-picture"
+                    className="profile-picture2"
                   />
                   <div style={{ display: "flex", flexDirection: "column" }}>
-                    <span className="profile-name">{selectedMember.name}</span>
+                    <span className="profile-name2">{selectedMember.name}</span>
                     {/* to show typing or not  */}
                     {typingUsers.includes(selectedMember.uid) && (
                       <span

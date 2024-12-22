@@ -345,6 +345,18 @@
   color: #4a5568;
   margin-left: 8px;
 }
+.profile-picture2 {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.profile-name2 {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #4a5568;
+  margin-left: 8px;
+}
 .log-out {
   background-color: #f1f5f9;
   border: 1px solid #ccc;
@@ -442,6 +454,15 @@
 }
 
 @media (max-width: 600px) {
+  .emoji-picker {
+    position: absolute;
+    bottom: 100px;
+    left: 10px;
+    z-index: 100;
+    width: 300px;
+    height: 400px;
+    overflow-y: auto;
+  }
   video {
     max-width: 100%;
     height: auto;
@@ -488,5 +509,16 @@
   }
   .typing {
     font-size: 0.3rem;
+  }
+  .profile-picture2 {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+  }
+  .profile-name2 {
+    font-size: 0.6rem;
+    font-weight: bold;
+    color: #4a5568;
+    margin-left: 8px;
   }
 }
