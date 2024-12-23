@@ -11,7 +11,7 @@ import { app } from "../firebaseConfig";
 import { setTeamMembers } from "./../store/teamMembersSlice";
 // import EmojiPicker from "emoji-picker-react";
 import loadingGif from "./../assets/a28a042da0a1ea728e75d8634da98a4e.gif";
-import loadingImage from "./../assets/talking-1988-ezgif.com-gif-to-webm-converter.webm";
+import loadingImage from "./../assets/7.png";
 import { useNavigate } from "react-router-dom";
 import { BsFileFont } from "react-icons/bs";
 import { IoIosOptions } from "react-icons/io";
@@ -127,17 +127,43 @@ const DashBoard = () => {
     }
   };
   // Handle tab close or navigation away from the page
+  const handleTabClose = async (user) => {
+    if (!user) return;
+
+    try {
+      // Reference to the user's document in Firestore
+      const userRef = doc(db, "users", user.uid);
+
+      // Update the status field to "inactive"
+      await updateDoc(userRef, {
+        status: "inactive",
+      });
+
+      console.log("User status set to inactive.");
+    } catch (error) {
+      console.error("Error setting user status to inactive:", error);
+    }
+  };
+
+  // Setup effect for handling tab close
   useEffect(() => {
-    const handleBeforeUnload = () => {
-      setUserInactive(); // Mark user as inactive in Firestore
+    // Ensure that `user` is available before adding event listener
+    if (!user) return;
+
+    const beforeUnloadHandler = (event) => {
+      handleTabClose(user);
+      // Returning a string in `beforeunload` event handler shows a confirmation prompt (optional)
+      event.returnValue = ""; // Show confirmation prompt (optional)
     };
+
     // Attach the event listener
-    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener("beforeunload", beforeUnloadHandler);
+
     // Cleanup the event listener on component unmount
     return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("beforeunload", beforeUnloadHandler);
     };
-  }, [user, db]);
+  }, []);
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -249,12 +275,12 @@ const DashBoard = () => {
     // Handler for back button
     const handleBackNavigation = (event) => {
       // Prevent default back navigation
+      setUserInactive();
       event.preventDefault();
 
       // If somehow back is pressed, go to a specific route
-      setUserInactive();
-      navigate("/");
       sessionStorage.clear();
+      navigate("/");
     };
 
     // Add event listeners
@@ -311,6 +337,8 @@ const DashBoard = () => {
 
           // Dispatch the updated team members list to Redux store
           dispatch(setTeamMembers(fetchedUsers));
+          console.log("fetchedUsers: " + fetchedUsers);
+          console.log("teamMembers: " + teamMembers);
           setLoading(false);
         });
       } catch (error) {
@@ -644,27 +672,27 @@ const DashBoard = () => {
     }
   }, [user, navigate]); // Depend on user and navigate
 
-  if (loading) {
-    return (
-      // loading page
-      <div
-        style={{
-          height: "100vh",
-          width: "100vw",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#f8f8f8", // Optional background color
-        }}
-      >
-        <img
-          src={loadingGif}
-          alt="Loading..."
-          style={{ minHeight: "50%", minWidth: "50%", objectFit: "fill" }}
-        />
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     // loading page
+  //     <div
+  //       style={{
+  //         height: "100vh",
+  //         width: "100vw",
+  //         display: "flex",
+  //         alignItems: "center",
+  //         justifyContent: "center",
+  //         backgroundColor: "#f8f8f8", // Optional background color
+  //       }}
+  //     >
+  //       <img
+  //         src={loadingGif}
+  //         alt="Loading..."
+  //         style={{ minHeight: "50%", minWidth: "50%", objectFit: "fill" }}
+  //       />
+  //     </div>
+  //   );
+  // }
   // if error is encountered
   if (error)
     return <div style={{ width: "100vw", height: "100vh" }}>error</div>;
@@ -680,18 +708,21 @@ const DashBoard = () => {
             onClick={() => setSidebarActive(!sidebarActive)}
           ></box-icon>
         )}
-        <h2 className="app-title">Chatter</h2>
-        {/* search box */}
-        <div className="search-box">
-          <input
-            type="text"
-            placeholder="Search for team members..."
-            className="search-input"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+        <div>
+          <h2 className="app-title">Chatter</h2>
+          {/* search box */}
+          <div className="search-box">
+            <input
+              type="text"
+              placeholder="Search for team members..."
+              className="search-input"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
         </div>
         {/* Team Members */}
+
         <h3 style={{ marginBottom: "10px" }}>Team Members</h3>
         <div className="team-members   scrollable">
           {loading ? (
@@ -728,7 +759,9 @@ const DashBoard = () => {
             <p>No team members found</p>
           )}
         </div>
+
         {/* Recent Chats */}
+
         <h3>Recent Chats</h3>
         <div className="recent-chats scrollable">
           {recentChats.length > 0 ? (
@@ -742,16 +775,7 @@ const DashBoard = () => {
                     selectedMember?.uid === member.uid ? "#f1f5f9" : "#f9f9f9",
                 }}
               >
-                <img
-                  src={member.avatar}
-                  alt={member.name}
-                  className="avatar"
-                  style={
-                    member.status === "active"
-                      ? { border: "2px solid #4dc9e6" }
-                      : {}
-                  }
-                />
+                <img src={member.avatar} alt={member.name} className="avatar" />
 
                 <div className="recent-chat-info">
                   <p>{member.name}</p>
@@ -945,20 +969,30 @@ const DashBoard = () => {
               width: "100%",
               overflow: "hidden",
               display: "flex",
+              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: "rgb(246, 242, 225)", // Optional background color
+              backgroundColor: "rgb(255, 255, 255)", // Optional background color
             }}
           >
-            <video
+            <p
+              style={{
+                fontSize: "24px",
+                fontWeight: "bold",
+                marginBottom: "20px",
+                color: "gray",
+                padding: "20px",
+                textAlign: "center",
+              }}
+            >
+              Select Any Team Member to start the conversation
+            </p>
+            <img
               src={loadingImage}
-              autoPlay
-              loop
-              muted
               alt="start chat "
-              width={600}
+              width={200}
               style={{ objectFit: "contain" }}
-            ></video>
+            ></img>
           </div>
         )}
         {/* Chat Messages */}

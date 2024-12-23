@@ -70,6 +70,7 @@ const ChatInput = ({
             background: "white",
             boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
             borderRadius: "8px",
+            height: "400px",
           }}
         >
           <EmojiPicker

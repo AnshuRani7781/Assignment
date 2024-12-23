@@ -1,5 +1,3 @@
-
-
 import "./../styles/Signup.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -32,7 +30,7 @@ const SignUp = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const db = getFirestore(app);
-  const auth = getAuth(app); 
+  const auth = getAuth(app);
 
   const validateForm = () => {
     let isValid = true;
@@ -72,7 +70,7 @@ const SignUp = () => {
     }
     return isValid;
   };
-  
+
   const handleSignUp = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
@@ -198,7 +196,7 @@ const SignUp = () => {
           </button>
         </form>
 
-        <p className="signin-link" style={{ color: "#fff" }}>
+        <p className="signin-link" style={{ color: "#fff", fontSize: "1rem" }}>
           Already have an account?{" "}
           <button
             className="btn"

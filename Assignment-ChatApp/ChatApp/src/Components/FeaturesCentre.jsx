@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 import { BsFileFont } from "react-icons/bs";
@@ -29,14 +30,15 @@ const FeaturesCenter = ({
           className="features-center-container"
           style={{
             position: "fixed",
-            top: "50%",
+            top: "6%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             backgroundColor: "white",
             padding: "20px",
             borderRadius: "10px",
             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-            zIndex: 1000, // To ensure it's on top
+            zIndex: 1000, // To ensure it's on  top
+            width: "100%",
           }}
         >
           <div

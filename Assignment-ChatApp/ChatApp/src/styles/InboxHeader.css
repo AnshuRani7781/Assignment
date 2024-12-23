@@ -29,7 +29,7 @@
 
 /* Sidebar Styles */
 .sidebar {
-  width: 250px;
+  width: 300px;
   background: #ffffff;
   border-right: 1px solid #eaeaea;
   padding: 10px;
@@ -37,6 +37,7 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
+  justify-content: stretch;
 }
 
 .app-title {
@@ -80,8 +81,9 @@
 
 .team-members {
   margin-bottom: 1rem;
+
   overflow-y: auto;
-  height: 30vh;
+  /* height: 30vh; */
   /* Adjust height as needed */
   overflow-y: scroll;
   -ms-overflow-style: none; /*For Internet Explorer and Edge*/
@@ -91,6 +93,7 @@
   height: 0;
 }
 .team-member {
+  flex-grow: 1;
   display: flex;
   align-items: center;
   padding: 10px;
@@ -146,7 +149,8 @@
 }
 .recent-chats {
   overflow-y: auto;
-  height: 30vh;
+  flex-grow: 1;
+  /* height: 30vh; */
   margin-top: 1rem;
 }
 
@@ -158,7 +162,12 @@
   cursor: pointer;
   transition: background-color 0.3s;
 }
-
+.team-members,
+.recent-chats {
+  flex-grow: 1; /* Make these sections expand and fill available space */
+  overflow-y: auto; /* Allow scrolling for overflow content */
+  margin-bottom: 1rem; /* Optional spacing between sections */
+}
 .chat-item:hover {
   background-color: #e5f7fb;
 }
@@ -406,18 +415,6 @@
 }
 /* Ensure Sidebar is Always Visible on Larger Screens */
 @media (min-width: 769px) {
-  .sidebar {
-    position: relative;
-    width: 300px;
-    background: #ffffff;
-    border-right: 1px solid #eaeaea;
-    height: 100vh;
-    overflow-y: auto;
-    box-shadow: none;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-  }
   .menu-icon {
     display: none; /* Hide menu icon on larger screens */
   }
@@ -441,7 +438,7 @@
 
 /* Show Sidebar when Active */
 .sidebar.active {
-  display: block;
+  display: flex;
   position: absolute;
   top: 0;
   left: 0;
@@ -451,6 +448,7 @@
   padding: 20px;
   overflow-y: auto;
   height: 100vh;
+  justify-content: stretch;
 
   z-index: 100;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
@@ -563,7 +561,7 @@
 
   .features-center-container {
     position: fixed;
-    top: 50%;
+    top: 0%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: white;
@@ -571,7 +569,14 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    max-width: 90%; /* Max width for small screens */
+    max-width: 100%; /* Max width for small screens */
     width: 400px; /* Default width for larger screens */
+  }
+}
+@media (max-width: 300px) {
+  .sidebar.active {
+    width: 100%;
+    height: 100vh;
+    justify-content: stretch;
   }
 }

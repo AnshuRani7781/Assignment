@@ -13,8 +13,9 @@ const Home = () => {
         color: "#fff",
         maxHeight: "fitContent",
         position: "relative",
+        width: "100%",
         background:
-          "linear-gradient(to top, rgb(77, 201, 230), rgb(33, 12, 174));",
+          "linear-gradient(to top, rgb(77, 201, 230), rgb(33, 12, 174))",
       }}
     >
       <div style={{ position: "absolute", top: "-30px", left: "35px" }}>
@@ -26,38 +27,37 @@ const Home = () => {
         />
       </div>
       <div className="main-content">
-        <div className="text-container" style={{ marginLeft: "2rem" }}>
+        <div className="text-container" style={{ marginLeft: "1rem" }}>
           <h1>
             Have your best chat
-            <Typewriter style={{ fontsize: "3.5rem", fontweight: "600" }} />
+            <Typewriter className="typewriter" style={{ fontsize: "2rem", fontweight: "600" }} />
           </h1>
           <h3
             style={{
-              fontSize: "1.5rem",
+              fontSize: "1rem",
               fontWeight: "300",
               marginBottom: "30px",
             }}
           >
             Fast, easy & unlimited team chat.
           </h3>
-          <div style={{ display: "flex", gap: "20px" }}>
-            <button
-              className="get-started"
-              onClick={handleGetStarted}
-              style={{
-                fontSize: "1.2rem",
-                padding: "10px 20px",
-                backgroundColor: "#fff",
-                color: "#007bff",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-                fontWeight: "bold",
-              }}
-            >
-              Get Started
-            </button>
-          </div>
+
+          <button
+            className="get-started"
+            onClick={handleGetStarted}
+            style={{
+              fontSize: "1.2rem",
+              padding: "10px 20px",
+              backgroundColor: "#fff",
+              color: "#007bff",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              fontWeight: "bold",
+            }}
+          >
+            Get Started
+          </button>
         </div>
 
         {/* Image Content */}

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import { BsFileFont } from "react-icons/bs";
 import "./../styles/InboxHeader.css";

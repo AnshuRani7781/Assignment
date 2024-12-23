@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -51,31 +52,37 @@ const Login = () => {
       // Check if the user document exists
       if (userSnap.exists()) {
         const userData = userSnap.data();
+        // Check if the user is already active
+        if (userData.status === "active") {
+          toast.error("You are already logged in from another session.");
+          setLoading(false); // Stop loading state
+          return; // Exit the function to prevent further execution
+        }
         // Check the status field and update if necessary
-        if (!userData.status || userData.status === "inactive") {
+        else {
           // If no status or if the status is inactive, set it to active
           await setDoc(
             userRef,
             { status: "active" },
             { merge: true } // Use merge to avoid overwriting other fields
           );
-        } 
 
+          // Dispatch user data to Redux store
+          dispatch(
+            setUser({
+              uid: user.uid,
+              email: user.email,
+              name: user.displayName || "user",
+              status: "active", // Make sure the user status in the store is "active"
+            })
+          );
 
-        // Dispatch user data to Redux store
-        dispatch(
-          setUser({
-            uid: user.uid,
-            email: user.email,
-            name: user.displayName || "user",
-            status: "active", // Make sure the user status in the store is "active"
-          })
-        );
+          dispatch(setRememberMe(rememberMe));
+          // updatePersistConfig(rememberMe);
+          navigate("/DashBoard");
+        }
+        // console.log("User logged in:", userCredential.user);
       }
-      dispatch(setRememberMe(rememberMe));
-      // updatePersistConfig(rememberMe);
-      navigate("/DashBoard");
-      // console.log("User logged in:", userCredential.user);
     } catch (error) {
       toast.error("Invalid email or password. Please try again.");
       //setError("Invalid email or password. Please try again.");
@@ -90,7 +97,15 @@ const Login = () => {
       setError(""); // Clear previous errors
       setLoading(true); // Show loading state
       const result = await signInWithPopup(auth, googleProvider);
-
+      const user = result.user;
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists() && userSnap.data().status === "active") {
+        const userData = userSnap.data();
+        toast.error("You are already logged in from another session.");
+        setLoading(false); // Stop loading state
+        return; // Exit the function to prevent further execution
+      }
       dispatch(
         setUser({
           uid: result.user.uid,
@@ -99,7 +114,7 @@ const Login = () => {
           status: "active",
         })
       );
-      const user = result.user;
+
       // Save user data to Firestore
       await setDoc(
         doc(db, "users", user.uid),
@@ -208,7 +223,14 @@ const Login = () => {
             justifyContent: "center",
           }}
         >
-          <p style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+          <p
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              fontSize: "1rem",
+            }}
+          >
             Or Sign in with{" "}
             <button
               style={{
@@ -226,7 +248,7 @@ const Login = () => {
           </p>
         </div>
 
-        <p style={{ fontSize: "14px" }}>
+        <p style={{ fontSize: "16px" }}>
           Don’t have an account?{" "}
           <button
             className="btn"
