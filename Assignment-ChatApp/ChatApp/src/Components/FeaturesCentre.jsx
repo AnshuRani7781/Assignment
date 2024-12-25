@@ -4,6 +4,8 @@ import { useState } from "react";
 import { BsFileFont } from "react-icons/bs";
 import { MdDeleteOutline, MdClose } from "react-icons/md";
 import ColorPicker from "./ColorPicker"; // Assuming you have this component
+import { Tooltip as ReactTooltip, Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 import "./../styles/InboxHeader.css";
 
 const FeaturesCenter = ({
@@ -101,19 +103,29 @@ const FeaturesCenter = ({
               onClick={handleDeleteChat}
               style={{ width: "40px", padding: "15px" }}
             >
-              <span className="option-container">
+              <span
+                data-tooltip-id="delete-tooltip"
+                data-tooltip-content="delete complete chat "
+                className="option-container"
+              >
                 <MdDeleteOutline size={20} />
               </span>
+              <ReactTooltip id="delete-tooltip" place="bottom" />
             </div>
 
             {/* Close Icon */}
-            <span className="option-container">
+            <span
+              className="option-container"
+              data-tooltip-id="close-tooltip"
+              data-tooltip-content="close "
+            >
               <MdClose
                 size={24}
                 style={{ cursor: "pointer" }}
                 onClick={handleToggle}
               />
             </span>
+            <ReactTooltip id="close-tooltip" />
           </div>
         </div>
       }

@@ -1,7 +1,9 @@
 /* eslint-disable react/prop-types */
 import { useState, useRef, useEffect } from "react";
 import EmojiPicker from "emoji-picker-react";
-import "boxicons/css/boxicons.min.css";
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
+
 import "./../styles/InboxHeader.css";
 
 const ChatInput = ({
@@ -46,6 +48,8 @@ const ChatInput = ({
     <div className="chat-input" style={{ position: "relative" }}>
       {/* Emoji Picker Toggle Button */}
       <button
+        data-tooltip-id="emoji-tooltip"
+        data-tooltip-content="Select Emoji"
         onClick={() => setShowEmojiPicker((prev) => !prev)}
         className="option-container emoji-picker-button"
         style={{
@@ -85,6 +89,7 @@ const ChatInput = ({
 
       {/* Message Input Field */}
       <input
+        className="input-field"
         type="text"
         placeholder="Enter your message here..."
         value={newMessage}
@@ -106,14 +111,34 @@ const ChatInput = ({
 
       {/* Send Button */}
       <button
+        data-tooltip-id="send-tooltip"
+        data-tooltip-content={
+          !newMessage ? "Can't send an empty message" : "Send Message"
+        }
         onClick={sendMessage}
+        disabled={!newMessage}
         style={{
           backgroundColor: "transparent",
           border: "none",
+          cursor: newMessage ? "pointer" : "not-allowed",
         }}
       >
-        <box-icon name="send" size="md" color="#ff4d4d"></box-icon>
+        <box-icon
+          name="send"
+          size="md"
+          color={newMessage ? "#ff4d4d" : "#ccc"} // Change color when disabled
+          style={{
+            cursor: "inherit", // Ensures it inherits cursor from parent (button)
+          }}
+        ></box-icon>
       </button>
+      <ReactTooltip
+        id="send-tooltip"
+        place="bottom"
+        effect="solid"
+        type="dark"
+      />
+      <ReactTooltip id="emoji-tooltip" place="top" effect="solid" type="info" />
     </div>
   );
 };

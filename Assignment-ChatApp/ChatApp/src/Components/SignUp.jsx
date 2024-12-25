@@ -98,7 +98,8 @@ const SignUp = () => {
           uid: userCredential.user.uid,
           email: userCredential.user.email,
           name: userCredential.user.displayName,
-          status: "active", // Add status field for user status (e.g., active, blocked, etc.)
+          status: "active", // Add status field for user status (e.g., active, blocked, etc.) 
+          
         })
       );
 
@@ -138,7 +139,7 @@ const SignUp = () => {
     <div className="signup-container">
       <div className="signup-card">
         <h2>Sign Up</h2>
-        {error && <p className="error-message">{error}</p>}
+        {/* {error && <p className="error-message">{error}</p>} */}
         <form onSubmit={handleSignUp}>
           <div className="row">
             <input

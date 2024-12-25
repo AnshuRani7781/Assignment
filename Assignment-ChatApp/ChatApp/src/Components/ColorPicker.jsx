@@ -1,5 +1,7 @@
 /* eslint-disable react/prop-types */
 import { doc, updateDoc } from "firebase/firestore";
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 // colorUtils.js (getTextColor function)
 const getTextColor = (backgroundColor) => {
   const hex = backgroundColor.replace("#", "");
@@ -67,20 +69,29 @@ const ColorPicker = ({
   };
 
   return (
-    <div className="color-picker" style={{}}>
-      <label htmlFor="backgroundColorPicker">
-        <box-icon
-          type="solid"
-          name="color"
-          color={selectedChatRoom?.color || "#ffffff"}
-        ></box-icon>
+    <div
+      className="color-picker"
+      data-tooltip-id="color-picker-tooltip"
+      data-tooltip-content="color picker"
+      style={{ cursorStyle: "pointer" }}
+    >
+      <label htmlFor="backgroundColorPicker" style={{ cursor: "pointer" }}>
+        <box-icon type="solid" name="color" color={"#000000"}></box-icon>
         <input
           type="color"
           id="backgroundColorPicker"
           value={selectedChatRoom?.color || "#ffffff"}
           onChange={handleBackgroundColorChange}
+          style={{ cursorStyle: "pointer" }}
         />
       </label>
+      <ReactTooltip
+        id="color-picker-tooltip"
+        place="bottom"
+        effect="solid"
+        type="dark"
+        style={{ zIndex: "1000" }}
+      />
     </div>
   );
 };

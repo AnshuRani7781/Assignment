@@ -73,7 +73,8 @@ const Login = () => {
               uid: user.uid,
               email: user.email,
               name: user.displayName || "user",
-              status: "active", // Make sure the user status in the store is "active"
+              status: "active",
+              avatar: user.avatar,
             })
           );
 
@@ -98,6 +99,13 @@ const Login = () => {
       setLoading(true); // Show loading state
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
+      await setDoc(
+        doc(db, "users", user.uid),
+        {
+          avatar: user.photoURL || "https://placehold.co/40x40",
+        },
+        { merge: true } // Avoid overwriting other fields
+      );
       const userRef = doc(db, "users", user.uid);
       const userSnap = await getDoc(userRef);
       if (userSnap.exists() && userSnap.data().status === "active") {
@@ -112,6 +120,7 @@ const Login = () => {
           email: result.user.email,
           name: result.user.displayName || "user",
           status: "active",
+          avatar: user.photoURL || "https://placehold.co/40x40",
         })
       );
 
@@ -122,9 +131,9 @@ const Login = () => {
           uid: user.uid,
           email: user.email,
           name: user.displayName || "Anonymous",
-          photoURL: user.photoURL || "",
           createdAt: new Date().toISOString(),
           status: "active",
+          avatar: user.photoURL || "https://placehold.co/40x40",
         },
         { merge: true }
       ); // Merge prevents overwriting if the document already exists
@@ -145,7 +154,8 @@ const Login = () => {
         toast.error(`Error: ${error.message}`);
       }
       //  console.error("Error with Google login:", error.message);
-      setError("Google login failed. Please try again.");
+      toast.error("Google login failed. Please try again.");
+      // setError("Google login failed. Please try again.");
     } finally {
       setLoading(false); // Remove loading state
     }
@@ -170,7 +180,7 @@ const Login = () => {
         }}
       >
         <h2>Log In</h2>
-        {error && <p className="error-message">{error}</p>}
+        {/* {error && <p className="error-message">{error}</p>} */}
         <form onSubmit={handleLogin}>
           <div className="input-group">
             <input

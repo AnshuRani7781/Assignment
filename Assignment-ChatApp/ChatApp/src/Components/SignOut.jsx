@@ -7,7 +7,8 @@ import { app } from "../firebaseConfig";
 import "./Logout.css";
 import { TbLogout } from "react-icons/tb";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
-
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 const SignOut = () => {
   const db = getFirestore(app); // Ensure getFirestore is correctly imported and initialized
   const dispatch = useDispatch();
@@ -68,8 +69,19 @@ const SignOut = () => {
   }, [user]);
 
   return (
-    <div className="log-out" onClick={handleSignOut}>
+    <div
+      className="log-out"
+      data-tooltip-content="logOut"
+      data-tooltip-id="logOut-tooltip"
+      onClick={handleSignOut}
+    >
       <TbLogout />
+      <ReactTooltip
+        id="logOut-tooltip"
+        place="bottom"
+        effect="solid"
+        type="info"
+      />
     </div>
   );
 };

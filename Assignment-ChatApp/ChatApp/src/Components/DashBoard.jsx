@@ -9,12 +9,16 @@ import { getAuth } from "firebase/auth";
 import { useState, useEffect } from "react";
 import { app } from "../firebaseConfig";
 import { setTeamMembers } from "./../store/teamMembersSlice";
+
 // import EmojiPicker from "emoji-picker-react";
 import loadingGif from "./../assets/a28a042da0a1ea728e75d8634da98a4e.gif";
 import loadingImage from "./../assets/7.png";
 import { useNavigate } from "react-router-dom";
 import { BsFileFont } from "react-icons/bs";
 import { IoIosOptions } from "react-icons/io";
+import Select from "react-select";
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 
 import {
   getFirestore,
@@ -52,7 +56,6 @@ const DashBoard = () => {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMember, setSelectedMember] = useState(null);
-
   const [sidebarActive, setSidebarActive] = useState(false);
   const [selectedFont, setSelectedFont] = useState("Arial");
   const [timeStampColor, setTimeStampColor] = useState(" #718096");
@@ -318,6 +321,7 @@ const DashBoard = () => {
 
   // eslint-disable-next-line no-unused-vars
   const auth = getAuth();
+
   // Fetch team members from Firestore and store them in redux storage
   useEffect(() => {
     let unsubscribe; // For cleanup
@@ -455,33 +459,32 @@ const DashBoard = () => {
   //console.log(sortedTeamMembers);
   const filteredAndSortedTeamMembers = searchQuery.trim()
     ? teamMembers
-        .filter(
-          (member) =>
-            member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            member.email.toLowerCase().includes(searchQuery.toLowerCase())
+        .filter((member) =>
+          member.name.toLowerCase().includes(searchQuery.toLowerCase())
         )
         .sort((a, b) => {
-          // Check name matches
           const nameA = a.name.toLowerCase();
           const nameB = b.name.toLowerCase();
           const query = searchQuery.toLowerCase();
 
+          const nameAStartsWithQuery = nameA.startsWith(query);
+          const nameBStartsWithQuery = nameB.startsWith(query);
+
+          // Prioritize names starting with the query
+          if (nameAStartsWithQuery && !nameBStartsWithQuery) return -1;
+          if (!nameAStartsWithQuery && nameBStartsWithQuery) return 1;
+
+          // If both or neither start with the query, compare positions of the query in names
           const nameAIndex = nameA.indexOf(query);
           const nameBIndex = nameB.indexOf(query);
 
-          // Prioritize matches at the beginning of the name
           if (nameAIndex !== nameBIndex) return nameAIndex - nameBIndex;
 
-          // If name matches equally, compare email matches
-          const emailA = a.email.toLowerCase();
-          const emailB = b.email.toLowerCase();
-
-          const emailAIndex = emailA.indexOf(query);
-          const emailBIndex = emailB.indexOf(query);
-
-          return emailAIndex - emailBIndex;
+          // If name matches equally, fall back to original sorting logic
+          return a.name.localeCompare(b.name);
         })
     : sortedTeamMembers;
+
   // Show all team members when search is empty
 
   // open chat room on clicking
@@ -674,7 +677,7 @@ const DashBoard = () => {
 
   // if (loading) {
   //   return (
-  //     // loading page
+  // loading page
   //     <div
   //       style={{
   //         height: "100vh",
@@ -704,11 +707,21 @@ const DashBoard = () => {
       <div className={`sidebar ${sidebarActive ? "active" : ""}`}>
         {sidebarActive && (
           <box-icon
+            data-tooltip-id="close-team-member-tooltip"
+            data-tooltip-content="close"
+            style={{ cursor: "pointer" }}
             name="x"
             onClick={() => setSidebarActive(!sidebarActive)}
           ></box-icon>
         )}
+
         <div>
+          <ReactTooltip
+            id="close-team-member-tooltip"
+            place="top"
+            effect="solid"
+            type="info"
+          />
           <h2 className="app-title">Chatter</h2>
           {/* search box */}
           <div className="search-box">
@@ -739,6 +752,10 @@ const DashBoard = () => {
                   backgroundColor:
                     selectedMember?.uid === member.uid ? "#f1f5f9" : "#f9f9f9",
                 }}
+                data-tooltip-content={
+                  member.status === "active" ? "active" : ""
+                }
+                data-tooltip-id="active-member-n"
               >
                 <img
                   src={member.avatar}
@@ -753,10 +770,16 @@ const DashBoard = () => {
                 <div>
                   <p>{member.name}</p>
                 </div>
+                <ReactTooltip
+                  id="active-member-n"
+                  effect="dark"
+                  place="bottom"
+                  zIndex="1000000"
+                />
               </div>
             ))
           ) : (
-            <p>No team members found</p>
+            <p>No team member found</p>
           )}
         </div>
 
@@ -774,12 +797,22 @@ const DashBoard = () => {
                   backgroundColor:
                     selectedMember?.uid === member.uid ? "#f1f5f9" : "#f9f9f9",
                 }}
+                data-tooltip-content={
+                  member.status === "active" ? "active" : ""
+                }
+                data-tooltip-id="active-member"
               >
                 <img src={member.avatar} alt={member.name} className="avatar" />
 
                 <div className="recent-chat-info">
                   <p>{member.name}</p>
                 </div>
+                <ReactTooltip
+                  id="active-member"
+                  effect="dark"
+                  place="bottom"
+                  zIndex="1000000"
+                />
               </div>
             ))
           ) : (
@@ -802,10 +835,18 @@ const DashBoard = () => {
               <div className="menu-icon">
                 <box-icon
                   name="menu"
+                  scale="large"
+                  data-tooltip-id="show-team-member-tooltip"
+                  data-tooltip-content="show team-member"
                   onClick={() => setSidebarActive(!sidebarActive)}
                 ></box-icon>
               </div>
-
+              <ReactTooltip
+                id="show-team-member-tooltip"
+                place="top-right"
+                effect="solid"
+                type="info"
+              />
               {/* Header or Selected Member Profile */}
               {selectedMember == null ? (
                 <h2>Messages</h2>
@@ -813,13 +854,22 @@ const DashBoard = () => {
                 <div className="profile">
                   <span
                     className="back"
+                    data-tooltip-content="back"
+                    data-tooltip-id="back-tooltip"
                     style={{ marginRight: "0.5rem" }}
                     onClick={() => setSelectedMember(null)}
                   >
                     <MdArrowBackIosNew />
                   </span>
+                  <ReactTooltip
+                    id="back-tooltip"
+                    place="bottom"
+                    effect="solid"
+                    type="info"
+                    style={{ zIndex: 100 }}
+                  ></ReactTooltip>
                   <img
-                    src="http://placehold.co/40x40"
+                    src={selectedMember.avatar}
                     alt="Profile"
                     className="profile-picture2"
                   />
@@ -849,7 +899,7 @@ const DashBoard = () => {
                 user ? (
                   <div className="profile">
                     <img
-                      src="http://placehold.co/40x40"
+                      src={user.avatar}
                       alt="profile of user"
                       className="profile-picture"
                     />
@@ -860,12 +910,17 @@ const DashBoard = () => {
                   loading
                 )
               ) : isOpen ? (
-                <span className="option-container">
+                <span
+                  className="option-container"
+                  data-tooltip-id="options-toggle-tooltip"
+                  data-tooltip-content="options"
+                >
                   <IoIosOptions
                     size={24}
                     style={{ cursor: "pointer" }}
                     onClick={handleToggleWithScreenSize}
                   />
+                  <ReactTooltip id="options-toggle-tooltip" place="left" />
                 </span>
               ) : (
                 <div
@@ -884,6 +939,7 @@ const DashBoard = () => {
                         display: "flex",
                         alignItems: "center",
                         paddingRight: "10px",
+                        cursor: "pointer",
                       }}
                     >
                       <label
@@ -893,60 +949,105 @@ const DashBoard = () => {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
+                          cursor: "pointer",
                         }}
                       >
-                        <BsFileFont />
+                        <BsFileFont
+                          data-tooltip-id="font-tooltip"
+                          data-tooltip-content="font selector"
+                        />
                       </label>
+                      <ReactTooltip
+                        id="font-tooltip"
+                        place="bottom"
+                        effect="solid"
+                        type="dark"
+                      />
                       {isDropdownVisible && (
-                        <select
+                        <Select
                           id="font-dropdown"
                           className="font-dropdown"
                           value={selectedFont}
                           onChange={handleFontChange}
+                          styles={{
+                            control: (base) => ({
+                              ...base,
+                              width: "80px",
+                              height: "30px",
+                              cursor: "pointer",
+                            }),
+                            option: (base) => ({
+                              ...base,
+                              cursor: "pointer", // Apply cursor to option items
+                            }),
+                          }}
                         >
-                          <option value="Arial">Arial</option>
-                          <option value="Roboto">Roboto</option>
-                          <option value="Poppins">Poppins</option>
+                          <option value="Arial" style={{ cursor: "pointer" }}>
+                            Arial
+                          </option>
+                          <option value="Roboto" style={{ cursor: "pointer" }}>
+                            Roboto
+                          </option>
+                          <option value="Poppins" style={{ cursor: "pointer" }}>
+                            Poppins
+                          </option>
                           <option value="Times New Roman">
                             Times New Roman
                           </option>
                           <option value="Courier New">Courier New</option>
-                        </select>
+                        </Select>
                       )}
                     </div>
                   </div>
 
                   {/* Color Picker */}
                   <ColorPicker
+                    style={{ cursor: "pointer" }}
                     db={db}
                     selectedChatRoom={selectedChatRoom}
                     setSelectedChatRoom={setSelectedChatRoom}
                     setTimeStampColor={setTimeStampColor}
                   />
+
                   {/* Delete Chat Icon */}
                   <div
                     onClick={handleDeleteChat}
                     style={{ width: "40px", padding: "15px" }}
                   >
-                    <span className="option-container">
+                    <span
+                      data-tooltip-id="delete-tooltip"
+                      data-tooltip-content="delete chat room"
+                      className="option-container"
+                    >
                       <MdDeleteOutline size={20} />
                     </span>
+                    <ReactTooltip
+                      id="delete-tooltip"
+                      place="bottom"
+                      effect="solid"
+                      type="info"
+                    ></ReactTooltip>
                   </div>
 
                   {/* Close Icon */}
-                  <span className="option-container">
+                  <span
+                    className="option-container"
+                    data-tooltip-id="close-tooltip"
+                    data-tooltip-content="close "
+                  >
                     <MdClose
                       size={24}
                       style={{ cursor: "pointer" }}
                       onClick={handleToggle}
                     />
                   </span>
+                  <ReactTooltip id="close-tooltip" />
                 </div>
               )}
 
               {isSmallScreen && isFeatureModalOpen && (
                 <FeaturesCenter
-                  db={db} // You can pass your db or other necessary props
+                  db={db} //  db
                   selectedChatRoom={selectedChatRoom}
                   setSelectedChatRoom={setSelectedChatRoom}
                   setTimeStampColor={setTimeStampColor}

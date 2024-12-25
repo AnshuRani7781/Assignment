@@ -9,6 +9,15 @@
   --hover-bg-color: #f1f5f9;
   --time-color: #718096;
 }
+input:hover {
+  cursor: pointer;
+}
+select {
+  -webkit-appearance: button !important;
+  -moz-appearance: button !important;
+  appearance: button !important;
+  cursor: pointer;
+}
 
 .dark-mode {
   --background-color: #121212; /* Dark mode */
@@ -39,7 +48,9 @@
   flex-direction: column;
   justify-content: stretch;
 }
-
+.color-picker {
+  cursor: pointer !important;
+}
 .app-title {
   font-size: 24px;
   font-weight: bold;
@@ -55,7 +66,7 @@
 
 .search-input {
   width: 100%;
-  padding: 10px 15px 10px 40px;
+  padding: 10px 5px 10px 20px;
   border: 1px solid #ddd;
   border-radius: 20px;
   background-color: #f9f9f9;
@@ -66,7 +77,10 @@
   outline: none;
   border-color: #4dc9e6;
 }
-
+input.input-field:focus {
+  outline: none;
+  border-color: #4dc9e6;
+}
 .search-icon {
   position: absolute;
   left: 10px;
@@ -269,7 +283,7 @@
 }
 
 .chat-input input:focus {
-  border-color: #4dc9e6;
+  border-color: #4dc9e6 !important;
 }
 
 .chat-input box-icon {
@@ -289,6 +303,13 @@
   color: #ff4d4d;
 }
 .option-container:hover {
+  cursor: pointer;
+  scale: 1.1;
+  transition: transform 0.3s;
+  color: #ff4d4d;
+}
+
+.font-selector:hover {
   cursor: pointer;
   scale: 1.1;
   transition: transform 0.3s;
@@ -433,6 +454,13 @@
     display: block;
     font-size: 24px;
     cursor: pointer;
+  }
+  .close-icon:hover {
+    scale: 1.5;
+    color: #ff4d4d !important;
+  }
+  .menu-icon:hover {
+    color: #ff4d4d !important;
   }
 }
 

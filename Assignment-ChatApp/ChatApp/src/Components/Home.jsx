@@ -42,7 +42,8 @@ const Home = () => {
             Fast, easy & unlimited team chat.
           </h3>
 
-          <button
+          <button 
+            
             className="get-started"
             onClick={handleGetStarted}
             style={{
