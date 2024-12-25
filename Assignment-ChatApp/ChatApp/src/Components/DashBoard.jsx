@@ -11,6 +11,7 @@ import { app } from "../firebaseConfig";
 import { setTeamMembers } from "./../store/teamMembersSlice";
 
 // import EmojiPicker from "emoji-picker-react";
+import avatarlocal from "./../assets/Profile_avatar_placeholder_large.png";
 import loadingGif from "./../assets/a28a042da0a1ea728e75d8634da98a4e.gif";
 import loadingImage from "./../assets/7.png";
 import { useNavigate } from "react-router-dom";
@@ -334,7 +335,7 @@ const DashBoard = () => {
               uid: doc.id,
               name: doc.data().name,
               email: doc.data().email,
-              avatar: doc.data().avatar || "https://placehold.co/40x40",
+              avatar: doc.data().avatar || "",
               status: doc.data().status || "inactive", // Include user status
             }))
             .filter((member) => member.uid !== user.uid); // Exclude the current user
@@ -758,7 +759,11 @@ const DashBoard = () => {
                 data-tooltip-id="active-member-n"
               >
                 <img
-                  src={member.avatar}
+                  src={
+                    member.avatar === ""
+                      ? avatarlocal
+                      : member?.avatar || avatarlocal
+                  }
                   alt={member.name}
                   className="avatar"
                   style={
@@ -802,7 +807,15 @@ const DashBoard = () => {
                 }
                 data-tooltip-id="active-member"
               >
-                <img src={member.avatar} alt={member.name} className="avatar" />
+                <img
+                  src={
+                    member?.avatar === ""
+                      ? avatarlocal
+                      : member?.avatar || avatarlocal
+                  }
+                  alt={member.name}
+                  className="avatar"
+                />
 
                 <div className="recent-chat-info">
                   <p>{member.name}</p>
@@ -869,7 +882,11 @@ const DashBoard = () => {
                     style={{ zIndex: 100 }}
                   ></ReactTooltip>
                   <img
-                    src={selectedMember.avatar}
+                    src={
+                      selectedMember?.avatar === ""
+                        ? avatarlocal
+                        : selectedMember?.avatar || avatarlocal
+                    }
                     alt="Profile"
                     className="profile-picture2"
                   />
@@ -899,7 +916,11 @@ const DashBoard = () => {
                 user ? (
                   <div className="profile">
                     <img
-                      src={user.avatar}
+                      src={
+                        user?.avatar === ""
+                          ? avatarlocal
+                          : user?.avatar || avatarlocal
+                      }
                       alt="profile of user"
                       className="profile-picture"
                     />

@@ -98,7 +98,8 @@ const SignUp = () => {
           uid: userCredential.user.uid,
           email: userCredential.user.email,
           name: userCredential.user.displayName,
-          status: "active", // Add status field for user status (e.g., active, blocked, etc.) 
+          status: "active",
+          avatar:"" // Add status field for user status (e.g., active, blocked, etc.)
           
         })
       );
@@ -111,7 +112,7 @@ const SignUp = () => {
           uid: userCredential.user.uid,
           email: userCredential.user.email,
           name: userCredential.user.displayName,
-          avatar: "https://placehold.co/40x40",
+          avatar: "",
           createdAt: new Date().toISOString(),
           status: "active",
         });

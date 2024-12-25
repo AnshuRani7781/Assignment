@@ -16,7 +16,8 @@ import {
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
-import { app } from "../firebaseConfig";
+import { app } from "../firebaseConfig"; 
+
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -63,7 +64,10 @@ const Login = () => {
           // If no status or if the status is inactive, set it to active
           await setDoc(
             userRef,
-            { status: "active" },
+            {
+              status: "active" 
+              
+             },
             { merge: true } // Use merge to avoid overwriting other fields
           );
 
@@ -102,7 +106,8 @@ const Login = () => {
       await setDoc(
         doc(db, "users", user.uid),
         {
-          avatar: user.photoURL || "https://placehold.co/40x40",
+          avatar:
+            user.photoURL ||"",
         },
         { merge: true } // Avoid overwriting other fields
       );
@@ -120,7 +125,9 @@ const Login = () => {
           email: result.user.email,
           name: result.user.displayName || "user",
           status: "active",
-          avatar: user.photoURL || "https://placehold.co/40x40",
+          avatar:
+            user.photoURL ||
+            "",
         })
       );
 
@@ -133,7 +140,7 @@ const Login = () => {
           name: user.displayName || "Anonymous",
           createdAt: new Date().toISOString(),
           status: "active",
-          avatar: user.photoURL || "https://placehold.co/40x40",
+          avatar: user.photoURL || "",
         },
         { merge: true }
       ); // Merge prevents overwriting if the document already exists
