@@ -39,13 +39,13 @@ const ChatMessages = ({
             message.senderId === user.uid ? "sent" : "received"
           }`}
         >
-          <p
-            className="message-text"
-            style={{ color: selectedChatRoom?.textColor || "#000000" }}
+          <p className="message-text">{message.text}</p>
+          <span
+            className="message-time"
+            style={{
+              color: message.senderId === user.id ? "#000000" : "#ffffff",
+            }}
           >
-            {message.text}
-          </p>
-          <span className="message-time" style={{ color: timeStampColor }}>
             {new Date(message.timestamp?.toDate()).toLocaleTimeString()}
           </span>
         </div>

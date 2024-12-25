@@ -197,9 +197,10 @@ input.input-field:focus {
   width: 100%;
   /* flex-grow: 1; */
   display: flex;
-  flex-direction: column;
-  justify-content: stretch;
 
+  flex-direction: column;
+  /* justify-content: stretch; */
+  overflow: hidden;
   background: #ffffff;
 }
 
@@ -224,9 +225,10 @@ input.input-field:focus {
 }
 
 .chat-messages {
-  flex-grow: 100;
+  flex-grow: 1;
   padding: 20px;
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -234,7 +236,7 @@ input.input-field:focus {
 }
 
 .message {
-  max-width: 70%;
+  max-width: 40%;
   padding: 10px 15px;
   border-radius: 10px;
   font-size: 14px;
@@ -417,12 +419,14 @@ input.input-field:focus {
 }
 
 .message.sent {
-  background-color: rgba(0, 0, 0, 0.1); /* Adjust for light themes */
+  background-color: #3198b6; /* Adjust for light themes */
+  color: #000000;
   text-align: right;
 }
 
 .message.received {
-  background-color: rgba(255, 255, 255, 0.1); /* Adjust for dark themes */
+  background-color: rgba(0, 0, 0); /* Adjust for dark themes */
+  color: #ffffff;
   text-align: left;
 }
 .menu-icon {

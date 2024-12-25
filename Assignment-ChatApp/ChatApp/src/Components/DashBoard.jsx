@@ -528,6 +528,14 @@ const DashBoard = () => {
         setSelectedMember(member);
 
         // Fetch and listen to messages in the chat room
+        // Move the clicked member to the top of recentChats
+        setRecentChats((prevChats) => {
+          const updatedChats = prevChats.filter(
+            (chat) => chat.uid !== member.uid
+          );
+          return [member, ...updatedChats];
+        });
+
         const chatMessagesQuery = query(
           collection(db, "chatrooms", querySnapshot.docs[0].id, "messages"),
           orderBy("timestamp", "asc")
@@ -568,6 +576,12 @@ const DashBoard = () => {
         });
         setSelectedMember(member);
         setChatMessages([]); // No messages in a new chat room
+        setRecentChats((prevChats) => {
+          const updatedChats = prevChats.filter(
+            (chat) => chat.uid !== member.uid
+          );
+          return [member, ...updatedChats];
+        });
       }
     } catch (error) {
       // console.error("Error fetching or creating chat room:", error);
@@ -814,6 +828,11 @@ const DashBoard = () => {
                       : member?.avatar || avatarlocal
                   }
                   alt={member.name}
+                  style={
+                    member.status === "active"
+                      ? { border: "2.5px solid #4dc9e6" }
+                      : {}
+                  }
                   className="avatar"
                 />
 
