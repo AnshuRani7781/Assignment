@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useRef } from "react";
-
+import loadingImage from "./../assets/png-transparent-online-chat-conversation-icon-talk-s-text-speech-balloon-monochrome-thumbnail-removebg-preview.png";
 const ChatMessages = ({
   selectedChatRoom,
   chatMessages,
@@ -23,7 +23,10 @@ const ChatMessages = ({
       className="chat-messages scrollable"
       ref={chatContainerRef} // Attach the ref to the container
       style={{
-        backgroundColor: selectedChatRoom?.color || "#ffffff", // Default white
+        backgroundColor:
+          chatMessages.length > 0
+            ? selectedChatRoom?.color || "#ffffff" // Use selected chat room color if available, otherwise default to white
+            : "#ffffff", // Default to white if there are no chat messages
         padding: "10px",
         borderRadius: "8px",
         fontFamily: selectedFont,
@@ -32,24 +35,57 @@ const ChatMessages = ({
         // Fixed height for the chat area
       }}
     >
-      {chatMessages.map((message, index) => (
+      {chatMessages.length > 0 ? (
+        chatMessages.map((message, index) => (
+          <div
+            key={index}
+            className={`message ${
+              message.senderId === user.uid ? "sent" : "received"
+            }`}
+          >
+            <p className="message-text">{message.text}</p>
+            <span
+              // className="message-time"
+              className={`message-timestamp ${
+                message.senderId === user.uid ? "sent" : "received"
+              }`}
+            >
+              {new Date(message.timestamp?.toDate()).toLocaleTimeString()}
+            </span>
+          </div>
+        ))
+      ) : (
         <div
-          key={index}
-          className={`message ${
-            message.senderId === user.uid ? "sent" : "received"
-          }`}
+          style={{
+            width: "100%",
+            backgroundColor: "#FFFF",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
-          <p className="message-text">{message.text}</p>
-          <span
-            className="message-time"
+          <p
             style={{
-              color: message.senderId === user.id ? "#000000" : "#ffffff",
+              fontSize: "24px",
+              fontWeight: "bold",
+              marginBottom: "0px",
+              color: "gray",
+              padding: "20px",
+              textAlign: "center",
             }}
           >
-            {new Date(message.timestamp?.toDate()).toLocaleTimeString()}
-          </span>
+            The chatroom is empty start the coversation
+          </p>
+          <img
+            className="start-conversation"
+            src={loadingImage}
+            alt="start chat "
+            width={300}
+            style={{ objectFit: "contain" }}
+          />
         </div>
-      ))}
+      )}
     </div>
   );
 };

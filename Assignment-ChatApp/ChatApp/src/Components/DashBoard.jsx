@@ -35,6 +35,7 @@ import {
   updateDoc,
   deleteDoc,
   setDoc,
+  limit,
 } from "firebase/firestore";
 import SignOut from "./SignOut";
 import ColorPicker from "./ColorPicker";
@@ -417,6 +418,7 @@ const DashBoard = () => {
       }
     };
   }, [selectedChatRoom, db]);
+
   //Function to change chat room colors
   useEffect(() => {
     if (selectedChatRoom?.id) {
@@ -529,12 +531,6 @@ const DashBoard = () => {
 
         // Fetch and listen to messages in the chat room
         // Move the clicked member to the top of recentChats
-        setRecentChats((prevChats) => {
-          const updatedChats = prevChats.filter(
-            (chat) => chat.uid !== member.uid
-          );
-          return [member, ...updatedChats];
-        });
 
         const chatMessagesQuery = query(
           collection(db, "chatrooms", querySnapshot.docs[0].id, "messages"),
@@ -576,12 +572,6 @@ const DashBoard = () => {
         });
         setSelectedMember(member);
         setChatMessages([]); // No messages in a new chat room
-        setRecentChats((prevChats) => {
-          const updatedChats = prevChats.filter(
-            (chat) => chat.uid !== member.uid
-          );
-          return [member, ...updatedChats];
-        });
       }
     } catch (error) {
       // console.error("Error fetching or creating chat room:", error);
@@ -589,54 +579,103 @@ const DashBoard = () => {
     }
   };
   // store all members who is currently having a chat room with the user
+
+  // Fetch recent chats and sort by the latest message timestamp
+
   useEffect(() => {
-    let unsubscribe;
+    let unsubscribe = null;
 
     const fetchRecentChats = () => {
       try {
-        const chatListeners = teamMembers.map((member) => {
+        // Store chat rooms with the latest message timestamp
+        const chatRooms = [];
+
+        // Listen for changes for each team member
+        teamMembers.forEach((member) => {
           const participantIds = [user.uid, member.uid].sort().join("-");
 
-          // Query to listen for changes in chatrooms for the current user and team member
+          // Query to find the chat room between the logged-in user and the team member
           const chatRoomQuery = query(
             collection(db, "chatrooms"),
             where("participantIds", "==", participantIds)
           );
 
-          // Attach a snapshot listener to the query
-          return onSnapshot(chatRoomQuery, (querySnapshot) => {
-            if (!querySnapshot.empty) {
-              setRecentChats((prevChats) => {
-                if (!prevChats.some((chat) => chat.uid === member.uid)) {
-                  return [...prevChats, member];
-                }
-                return prevChats;
-              });
-            }
-          });
-        });
+          // Listen to changes in the chatroom collection
+          const unsubscribeChatRoom = onSnapshot(
+            chatRoomQuery,
+            (querySnapshot) => {
+              if (!querySnapshot.empty) {
+                const chatRoomId = querySnapshot.docs[0].id;
 
-        // Combine all listeners for cleanup
-        unsubscribe = () => {
-          chatListeners.forEach((unsub) => unsub());
-        };
+                // Query the most recent message in the chat room
+                const messagesQuery = query(
+                  collection(db, "chatrooms", chatRoomId, "messages"),
+                  orderBy("timestamp", "desc"),
+                  limit(1) // We only care about the most recent message
+                );
+
+                // Listen for changes in the messages collection
+                const unsubscribeMessages = onSnapshot(
+                  messagesQuery,
+                  (messageSnapshot) => {
+                    if (!messageSnapshot.empty) {
+                      const latestMessage = messageSnapshot.docs[0].data();
+                      const latestMessageTimestamp =
+                        latestMessage.timestamp.seconds;
+
+                      // Check if the member already exists in recentChats
+                      setRecentChats((prevChats) => {
+                        // Remove the member if already exists to prevent duplicates
+                        const updatedChats = prevChats.filter(
+                          (chat) => chat.uid !== member.uid
+                        );
+
+                        // Add the member at the top or update timestamp if already present
+                        const updatedMember = {
+                          ...member,
+                          latestMessageTimestamp, // Use the timestamp to update sorting
+                        };
+
+                        // Add the updated member to the front
+                        updatedChats.unshift(updatedMember);
+
+                        // Sort chats based on the latest message timestamp in descending order
+                        return updatedChats.sort(
+                          (a, b) =>
+                            b.latestMessageTimestamp - a.latestMessageTimestamp
+                        );
+                      });
+                    }
+                  }
+                );
+
+                // Cleanup messages listener
+                return () => unsubscribeMessages();
+              }
+            }
+          );
+
+          // Cleanup chat room listener
+          return () => unsubscribeChatRoom();
+        });
       } catch (error) {
-        // Handle errors
-        setError(error.message);
+        setError(error.message); // Handle errors
       }
     };
 
+    // Only fetch recent chats if there are team members
     if (teamMembers.length > 0) {
       fetchRecentChats();
     }
 
-    // Cleanup all listeners when component unmounts or dependencies change
+    // Cleanup listeners on unmount
     return () => {
       if (unsubscribe) {
         unsubscribe();
       }
     };
   }, [teamMembers, user, db]);
+
   // Fetch chat messages for the selected chat room
   //send message to the server and return results
   const sendMessage = async () => {
@@ -737,7 +776,9 @@ const DashBoard = () => {
             effect="solid"
             type="info"
           />
-          <h2 className="app-title">Chatter</h2>
+          <h2 className="app-title">
+            C<span>hatter</span>
+          </h2>
           {/* search box */}
           <div className="search-box">
             <input
@@ -972,13 +1013,17 @@ const DashBoard = () => {
                   }}
                 >
                   {/* Font Selector */}
-                  <div style={{ fontFamily: selectedFont }}>
+                  <div
+                    style={{ fontFamily: selectedFont, marginRight: "1.5rem" }}
+                  >
                     <div
+                      data-tooltip-id="font-tooltip"
+                      data-tooltip-content="font selector"
                       className="font-selector"
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        paddingRight: "10px",
+                        // paddingRight: "10px",
                         cursor: "pointer",
                       }}
                     >
@@ -992,54 +1037,67 @@ const DashBoard = () => {
                           cursor: "pointer",
                         }}
                       >
-                        <BsFileFont
-                          data-tooltip-id="font-tooltip"
-                          data-tooltip-content="font selector"
-                        />
+                        <div
+                          style={{
+                            border: "1px solid #000000", // Border style
+                            padding: "6px 10px", // Padding around the text
+                            borderRadius: "5px", // Optional: rounded corners
+                            display: "inline-block", // Makes the border fit around the text
+                            fontSize: "13px", // Adjust text size as needed
+                            fontWeight: "bold",
+                            marginRight: "5px", //
+                          }}
+                        >
+                          Font
+                        </div>
                       </label>
-                      <ReactTooltip
-                        id="font-tooltip"
-                        place="bottom"
-                        effect="solid"
-                        type="dark"
-                      />
+
                       {isDropdownVisible && (
-                        <Select
+                        <select
                           id="font-dropdown"
                           className="font-dropdown"
                           value={selectedFont}
+                          style={{ marginRight: "1.5rem" }}
                           onChange={handleFontChange}
-                          styles={{
-                            control: (base) => ({
-                              ...base,
-                              width: "80px",
-                              height: "30px",
-                              cursor: "pointer",
-                            }),
-                            option: (base) => ({
-                              ...base,
-                              cursor: "pointer", // Apply cursor to option items
-                            }),
-                          }}
                         >
-                          <option value="Arial" style={{ cursor: "pointer" }}>
+                          <option value="Arial" style={{ fontFamily: "Arial" }}>
                             Arial
                           </option>
-                          <option value="Roboto" style={{ cursor: "pointer" }}>
+                          <option
+                            value="Roboto"
+                            style={{ fontFamily: "Roboto" }}
+                          >
                             Roboto
                           </option>
-                          <option value="Poppins" style={{ cursor: "pointer" }}>
+                          <option
+                            value="Poppins"
+                            style={{ fontFamily: " Poppins" }}
+                          >
                             Poppins
                           </option>
-                          <option value="Times New Roman">
+                          <option
+                            value="Times New Roman"
+                            style={{ fontFamily: " Times New Roman" }}
+                          >
                             Times New Roman
                           </option>
-                          <option value="Courier New">Courier New</option>
-                        </Select>
+                          <option
+                            value="Courier New"
+                            style={{ fontFamily: "Courier New" }}
+                          >
+                            Courier New
+                          </option>
+                        </select>
                       )}
                     </div>
                   </div>
-
+                  <ReactTooltip
+                    id="font-tooltip"
+                    place="bottom"
+                    effect="solid"
+                    type="dark"
+                    className="tooltip"
+                  />
                   {/* Color Picker */}
                   <ColorPicker
                     style={{ cursor: "pointer" }}
@@ -1052,21 +1110,13 @@ const DashBoard = () => {
                   {/* Delete Chat Icon */}
                   <div
                     onClick={handleDeleteChat}
-                    style={{ width: "40px", padding: "15px" }}
+                    style={{ width: "40px" }}
+                    data-tooltip-id="delete-tooltip"
+                    data-tooltip-content="delete chat room"
                   >
-                    <span
-                      data-tooltip-id="delete-tooltip"
-                      data-tooltip-content="delete chat room"
-                      className="option-container"
-                    >
+                    <span className="option-container">
                       <MdDeleteOutline size={20} />
                     </span>
-                    <ReactTooltip
-                      id="delete-tooltip"
-                      place="bottom"
-                      effect="solid"
-                      type="info"
-                    ></ReactTooltip>
                   </div>
 
                   {/* Close Icon */}
@@ -1081,10 +1131,16 @@ const DashBoard = () => {
                       onClick={handleToggle}
                     />
                   </span>
-                  <ReactTooltip id="close-tooltip" />
+                  <ReactTooltip id="close-tooltip" className="tooltip" />
                 </div>
               )}
-
+              <ReactTooltip
+                id="delete-tooltip"
+                place="bottom"
+                effect="solid"
+                type="info"
+                className="tooltip"
+              />
               {isSmallScreen && isFeatureModalOpen && (
                 <FeaturesCenter
                   db={db} //  db

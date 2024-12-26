@@ -9,8 +9,12 @@
   --hover-bg-color: #f1f5f9;
   --time-color: #718096;
 }
-input:hover {
-  cursor: pointer;
+
+.color-picker:hover {
+  scale: 1.1;
+}
+.tooltip {
+  z-index: 10000;
 }
 select {
   -webkit-appearance: button !important;
@@ -244,7 +248,20 @@ input.input-field:focus {
   position: relative;
   animation: fadeIn 0.3s ease-in-out;
 }
-
+.message-timestamp.sent {
+  font-size: 9px;
+  color: #718096;
+  margin-top: 5px;
+  text-align: right;
+  color: rgba(0, 0, 0, 0.5);
+}
+.message-timestamp.received {
+  font-size: 9px;
+  color: #718096;
+  margin-top: 5px;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.5);
+}
 .message.sent {
   background: #4dc9e6;
   color: #ffffff;
@@ -258,7 +275,7 @@ input.input-field:focus {
 }
 
 .message-time {
-  font-size: 12px;
+  font-size: 9px;
   color: #718096;
   margin-top: 5px;
   text-align: right;
@@ -419,7 +436,7 @@ input.input-field:focus {
 }
 
 .message.sent {
-  background-color: #3198b6; /* Adjust for light themes */
+  background-color: #fafafa; /* Adjust for light themes */
   color: #000000;
   text-align: right;
 }
@@ -465,6 +482,9 @@ input.input-field:focus {
   }
   .menu-icon:hover {
     color: #ff4d4d !important;
+  }
+  .start-conversation {
+    width: 250px;
   }
 }
 

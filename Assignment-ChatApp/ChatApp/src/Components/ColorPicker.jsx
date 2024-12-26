@@ -69,30 +69,42 @@ const ColorPicker = ({
   };
 
   return (
-    <div
-      className="color-picker"
-      data-tooltip-id="color-picker-tooltip"
-      data-tooltip-content="color picker"
-      style={{ cursorStyle: "pointer" }}
-    >
-      <label htmlFor="backgroundColorPicker" style={{ cursor: "pointer" }}>
-        <box-icon type="solid" name="color" color={"#000000"}></box-icon>
+    <>
+      <div
+        className="color-picker"
+        style={{
+          cursor: "pointer",
+          marginRight: "1.5rem",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <label htmlFor="backgroundColorPicker" style={{ cursor: "pointer" }}>
+          <box-icon
+            type="solid"
+            name="color"
+            color={"#000000"}
+            data-tooltip-id="color-picker-tooltip"
+            data-tooltip-content="color picker"
+          ></box-icon>
+        </label>
         <input
           type="color"
           id="backgroundColorPicker"
           value={selectedChatRoom?.color || "#ffffff"}
           onChange={handleBackgroundColorChange}
-          style={{ cursorStyle: "pointer" }}
+          style={{ cursor: "pointer" }}
         />
-      </label>
+      </div>
       <ReactTooltip
         id="color-picker-tooltip"
         place="bottom"
         effect="solid"
-        type="dark"
-        style={{ zIndex: "1000" }}
+        type="info"
+        style={{ zIndex: 100 }}
       />
-    </div>
+    </>
   );
 };
 export default ColorPicker;

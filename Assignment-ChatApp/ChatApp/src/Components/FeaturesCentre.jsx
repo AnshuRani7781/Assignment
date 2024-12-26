@@ -54,6 +54,8 @@ const FeaturesCenter = ({
             {/* Font Selector */}
             <div style={{ fontFamily: selectedFont }}>
               <div
+                data-tooltip-id="font-tooltip"
+                data-tooltip-content="font selector"
                 className="font-selector"
                 style={{
                   display: "flex",
@@ -89,6 +91,12 @@ const FeaturesCenter = ({
                 )}
               </div>
             </div>
+            <ReactTooltip
+              id="font-tooltip"
+              place="bottom"
+              effect="solid"
+              type="dark"
+            />
 
             {/* Color Picker */}
             <ColorPicker
@@ -110,9 +118,8 @@ const FeaturesCenter = ({
               >
                 <MdDeleteOutline size={20} />
               </span>
-              <ReactTooltip id="delete-tooltip" place="bottom" />
             </div>
-
+            <ReactTooltip id="delete-tooltip" place="bottom" />
             {/* Close Icon */}
             <span
               className="option-container"
@@ -125,7 +132,7 @@ const FeaturesCenter = ({
                 onClick={handleToggle}
               />
             </span>
-            <ReactTooltip id="close-tooltip" />
+            <ReactTooltip id="close-tooltip" place="bottom" type="info" />
           </div>
         </div>
       }
