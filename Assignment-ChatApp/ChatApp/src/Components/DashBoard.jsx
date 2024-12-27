@@ -834,7 +834,7 @@ const DashBoard = () => {
                   className="avatar"
                   style={
                     member.status === "active"
-                      ? { border: "2px solid #4dc9e6" }
+                      ? { border: "2px solid #4dc9e6", padding: "1.5px" }
                       : {}
                   }
                 />
@@ -882,7 +882,7 @@ const DashBoard = () => {
                   alt={member.name}
                   style={
                     member.status === "active"
-                      ? { border: "2.5px solid #4dc9e6" }
+                      ? { border: "2.5px solid #4dc9e6", padding: "1.5px" }
                       : {}
                   }
                   className="avatar"
