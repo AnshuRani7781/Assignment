@@ -193,6 +193,8 @@ const Login = () => {
             src="https://lottie.host/1df8fc93-cd88-43a2-891e-f7d8efc67efc/KoY5CKx1PJ.lottie"
             loop
             autoplay
+            width="200px"
+            height="200px"
           />
         </div>
       )}

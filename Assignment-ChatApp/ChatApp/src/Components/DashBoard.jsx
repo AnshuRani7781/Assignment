@@ -1005,12 +1005,24 @@ const DashBoard = () => {
                 <span
                   className="option-container"
                   data-tooltip-id="options-toggle-tooltip"
-                  data-tooltip-content="options"
+                  data-tooltip-content={
+                    chatMessages.length > 0
+                      ? "Access chat options"
+                      : "Cannot access options: Chat room is empty"
+                  }
                 >
                   <IoIosOptions
                     size={24}
-                    style={{ cursor: "pointer" }}
-                    onClick={handleToggleWithScreenSize}
+                    style={{
+                      cursor:
+                        chatMessages.length > 0 ? "pointer" : "not-allowed", // Enable cursor only if messages exist
+                      opacity: chatMessages.length > 0 ? 1 : 0.5, // Dim the icon if chatMessages is empty
+                    }}
+                    onClick={
+                      chatMessages.length > 0
+                        ? handleToggleWithScreenSize
+                        : null
+                    }
                   />
                   <ReactTooltip id="options-toggle-tooltip" place="left" />
                 </span>
@@ -1120,7 +1132,10 @@ const DashBoard = () => {
 
                   {/* Delete Chat Icon */}
                   <div
-                    onClick={handleDeleteChat}
+                    onClick={() => {
+                      handleDeleteChat(); // Perform the delete action
+                      handleToggleWithScreenSize(); // Close the options menu
+                    }}
                     style={{ width: "40px" }}
                     data-tooltip-id="delete-tooltip"
                     data-tooltip-content="delete chat room"

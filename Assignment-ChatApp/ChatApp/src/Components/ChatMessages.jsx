@@ -63,6 +63,7 @@ const ChatMessages = ({
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
+            flexGrow: 1,
           }}
         >
           <p
