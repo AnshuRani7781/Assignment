@@ -13,6 +13,7 @@ import { getFirestore } from "firebase/firestore";
 import { app } from "../firebaseConfig";
 import { toast } from "react-toastify"; // Import Toastify
 import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -99,8 +100,7 @@ const SignUp = () => {
           email: userCredential.user.email,
           name: userCredential.user.displayName,
           status: "active",
-          avatar:"" // Add status field for user status (e.g., active, blocked, etc.)
-          
+          avatar: "", // Add status field for user status (e.g., active, blocked, etc.)
         })
       );
 
@@ -121,7 +121,7 @@ const SignUp = () => {
 
       //console.log("User signed up:", userCredential.user);
       //console.log("User full name:", userCredential.user.displayName);
-      navigate("/DashBoard");
+      navigate("/DashBoard", { state: { success: true } });
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         // Specific check for email already in use error
@@ -138,6 +138,28 @@ const SignUp = () => {
 
   return (
     <div className="signup-container">
+      {loading && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "linear-gradient(to top,#4dc9e6,#210cae)", // Adds a translucent overlay
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999, // Ensures the loading animation appears above everything
+          }}
+        >
+          <DotLottieReact
+            src="https://lottie.host/1df8fc93-cd88-43a2-891e-f7d8efc67efc/KoY5CKx1PJ.lottie"
+            loop
+            autoplay
+          />
+        </div>
+      )}
       <div className="signup-card">
         <h2>Sign Up</h2>
         {/* {error && <p className="error-message">{error}</p>} */}

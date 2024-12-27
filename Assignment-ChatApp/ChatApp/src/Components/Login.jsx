@@ -16,7 +16,9 @@ import {
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
-import { app } from "../firebaseConfig"; 
+import { app } from "../firebaseConfig";
+import loadingAnimation from "./../assets/Animation - 1735281044373.webm";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -65,9 +67,8 @@ const Login = () => {
           await setDoc(
             userRef,
             {
-              status: "active" 
-              
-             },
+              status: "active",
+            },
             { merge: true } // Use merge to avoid overwriting other fields
           );
 
@@ -84,7 +85,7 @@ const Login = () => {
 
           dispatch(setRememberMe(rememberMe));
           // updatePersistConfig(rememberMe);
-          navigate("/DashBoard");
+          navigate("/DashBoard", { state: { success: true } });
         }
         // console.log("User logged in:", userCredential.user);
       }
@@ -106,8 +107,7 @@ const Login = () => {
       await setDoc(
         doc(db, "users", user.uid),
         {
-          avatar:
-            user.photoURL ||"",
+          avatar: user.photoURL || "",
         },
         { merge: true } // Avoid overwriting other fields
       );
@@ -125,9 +125,7 @@ const Login = () => {
           email: result.user.email,
           name: result.user.displayName || "user",
           status: "active",
-          avatar:
-            user.photoURL ||
-            "",
+          avatar: user.photoURL || "",
         })
       );
 
@@ -151,7 +149,7 @@ const Login = () => {
       //   result.user.email,
       //   result.user.email);
       dispatch(setRememberMe(rememberMe));
-      navigate("/DashBoard");
+      navigate("/DashBoard", { state: { success: true } });
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         // Specific check for email already in use error
@@ -176,6 +174,28 @@ const Login = () => {
         // background: " linear-gradient(to top, #4dc9e6, #210cae)",
       }}
     >
+      {loading && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "linear-gradient(to top,#4dc9e6,#210cae)", // Adds a translucent overlay
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999, // Ensures the loading animation appears above everything
+          }}
+        >
+          <DotLottieReact
+            src="https://lottie.host/1df8fc93-cd88-43a2-891e-f7d8efc67efc/KoY5CKx1PJ.lottie"
+            loop
+            autoplay
+          />
+        </div>
+      )}
       <div
         className="auth-container"
         style={{

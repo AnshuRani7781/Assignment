@@ -14,7 +14,7 @@ import { setTeamMembers } from "./../store/teamMembersSlice";
 import avatarlocal from "./../assets/Profile_avatar_placeholder_large.png";
 import loadingGif from "./../assets/a28a042da0a1ea728e75d8634da98a4e.gif";
 import loadingImage from "./../assets/7.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { BsFileFont } from "react-icons/bs";
 import { IoIosOptions } from "react-icons/io";
 import Select from "react-select";
@@ -49,6 +49,7 @@ const DashBoard = () => {
   const teamMembers = useSelector((state) => state.teamMembers.teamMembers);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const [recentChats, setRecentChats] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
@@ -72,6 +73,16 @@ const DashBoard = () => {
   const isSmallScreen = useMediaQuery({ query: "(max-width: 500px)" });
 
   // Toggle function for smaller screen (opens modal) and larger screen (opens feature menu)
+
+  useEffect(() => {
+    const hasShownToast = sessionStorage.getItem("loggedInToastShown");
+
+    // Check if the success state exists and the toast hasn't been shown
+    if (location.state?.success && !hasShownToast) {
+      toast.success("Logged in successfully!");
+      sessionStorage.setItem("loggedInToastShown", "true"); // Mark as shown
+    }
+  }, [location.state]);
   const handleToggleWithScreenSize = () => {
     if (isSmallScreen) {
       setFeatureModalOpen(!isFeatureModalOpen); // For small screens, toggle modal
