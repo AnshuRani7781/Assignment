@@ -425,7 +425,7 @@ input.input-field:focus {
 }
 .chat-messages {
   overflow-y: auto;
-  margin: 10px 0;
+  margin: 10px 4px;
 }
 
 .message {

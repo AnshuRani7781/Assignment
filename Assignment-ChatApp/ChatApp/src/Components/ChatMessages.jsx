@@ -64,6 +64,7 @@ const ChatMessages = ({
             justifyContent: "center",
             alignItems: "center",
             flexGrow: 1,
+            overflow: "hidden",
           }}
         >
           <p
