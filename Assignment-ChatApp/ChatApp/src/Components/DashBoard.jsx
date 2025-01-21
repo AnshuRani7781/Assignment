@@ -168,6 +168,7 @@ const DashBoard = () => {
 
     const beforeUnloadHandler = (event) => {
       handleTabClose(user);
+      sessionStorage.clear();
       // Returning a string in `beforeunload` event handler shows a confirmation prompt (optional)
       event.returnValue = ""; // Show confirmation prompt (optional)
     };
